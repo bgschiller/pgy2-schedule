@@ -20,10 +20,10 @@ INPATIENT_ROTATIONS = [
 ROTATIONS = INPATIENT_ROTATIONS + OUTPATIENT_ROTATIONS
 
 DH_RESIDENTS = [
-    'Weeks', 'Schiller', 'Mathews', 'Wong',
+    'John', 'Morgan', 'Anita', 'Alicia',
 ]
 UH_RESIDENTS = [
-    'Herring', 'Utter', 'Rabaza', 'Malam', 'Spadafore', 'Malki',
+    'Kenny', 'Jeff', 'Cristi', 'Naomi', 'Steve', 'Alisa',
 ]
 
 RESIDENTS = DH_RESIDENTS + UH_RESIDENTS
@@ -271,10 +271,10 @@ Also would be nice:
 #3 Alternating months of inpatient and outpatient throughout the year, within the realm of reason (like two consecutive months of either is not a big deal)
 """
 anita_objective = (
-    3/6 * sum(x['Dec', rotation, 'Mathews'] for rotation in VACATIONABLE_ROTATIONS) +
-    1/6 * sum(x[month, 'MICU-DH', 'Mathews'] for month in MONTHS) +
-    1/6 * sum(x[month, 'Inpatient Peds DH', 'Mathews'] for month in MONTHS) +
-    1/6 * no_two_inpatient_in_a_row('Mathews')
+    3/6 * sum(x['Dec', rotation, 'Anita'] for rotation in VACATIONABLE_ROTATIONS) +
+    1/6 * sum(x[month, 'MICU-DH', 'Anita'] for month in MONTHS) +
+    1/6 * sum(x[month, 'Inpatient Peds DH', 'Anita'] for month in MONTHS) +
+    1/6 * no_two_inpatient_in_a_row('Anita')
 )
 resident_objective.append(anita_objective)
 
@@ -286,10 +286,10 @@ Naomi's Goal
 #3 Elective/vacation eligible month in any of the following: July, October, January, April (these are months RJ has outpatient so we could hopefully have at least some vacation time together!)
 """
 naomi_objective = (
-    3/6 * or_all([x['Sep', rotation, 'Malam'] for rotation in OUTPATIENT_ROTATIONS]) +
-    2/6 * or_all([x['May', rotation, 'Malam'] for rotation in OUTPATIENT_ROTATIONS]) +
+    3/6 * or_all([x['Sep', rotation, 'Naomi'] for rotation in OUTPATIENT_ROTATIONS]) +
+    2/6 * or_all([x['May', rotation, 'Naomi'] for rotation in OUTPATIENT_ROTATIONS]) +
     1/6 * avg([
-        or_all([x[month, rotation, 'Malam'] for rotation in OUTPATIENT_ROTATIONS])
+        or_all([x[month, rotation, 'Naomi'] for rotation in OUTPATIENT_ROTATIONS])
         for month in ('Jul', 'Oct', 'Jan', 'Apr')])
 )
 resident_objective.append(naomi_objective)
@@ -301,10 +301,10 @@ Stephen's Goal
 2) I would like to be on outpatient (MSK, Gyn, or School Based Peds) in August and January.
 """
 stephen_objective = (
-    1/3 * x['Nov', 'Elective', 'Spadafore'] +
-    1/3 * x['Mar', 'Elective', 'Spadafore'] +
-    1/6 * sum(x['Aug', rotation, 'Spadafore'] for rotation in ('MSK-1', 'Gyn', 'School-based Peds')) +
-    1/6 * sum(x['Jan', rotation, 'Spadafore'] for rotation in ('MSK-1', 'Gyn', 'School-based Peds'))
+    1/3 * x['Nov', 'Elective', 'Steve'] +
+    1/3 * x['Mar', 'Elective', 'Steve'] +
+    1/6 * sum(x['Aug', rotation, 'Steve'] for rotation in ('MSK-1', 'Gyn', 'School-based Peds')) +
+    1/6 * sum(x['Jan', rotation, 'Steve'] for rotation in ('MSK-1', 'Gyn', 'School-based Peds'))
 )
 resident_objective.append(stephen_objective)
 
@@ -315,10 +315,10 @@ Kenny's Goal
 2) Something outpatient in December (elective, Gyn, MSK-1, or school Peds).
 """
 kenny_objective = (
-    2/3 * x['Sep', 'Elective', 'Herring'] +
-    1/3 * sum(x['Sep', rotation, 'Herring'] for rotation in ('Gyn', 'MSK-1', 'School-based Peds')) +
+    2/3 * x['Sep', 'Elective', 'Kenny'] +
+    1/3 * sum(x['Sep', rotation, 'Kenny'] for rotation in ('Gyn', 'MSK-1', 'School-based Peds')) +
     # Prior two conflict, so it's okay that the weights sum to over 1
-    1/3 * sum(x['Dec', rotation, 'Herring'] for rotation in ('Elective', 'Gyn', 'MSK-1', 'School-based Peds'))
+    1/3 * sum(x['Dec', rotation, 'Kenny'] for rotation in ('Elective', 'Gyn', 'MSK-1', 'School-based Peds'))
 )
 resident_objective.append(kenny_objective)
 
@@ -328,9 +328,9 @@ Alicia's Goal
 Not do more than 2 inpatient months in a row (my arms will die)
 Per Linda, I can’t do FMS during Chautauqua months  since I can’t do OB independently
 """
-alicia_objective = no_two_inpatient_in_a_row('Wong')
+alicia_objective = no_two_inpatient_in_a_row('Alicia')
 model.addConstraint(
-    sum(x[month, 'FMS', 'Wong'] for month in ('Jun', 'Jul', 'Nov')) == 0,
+    sum(x[month, 'FMS', 'Alicia'] for month in ('Jun', 'Jul', 'Nov')) == 0,
     'Per Linda, Alicia cannot do FMS during Chautauqua months')
 resident_objective.append(alicia_objective)
 
@@ -348,10 +348,10 @@ def as_early_as_possible(resident, rotation):
     return sum(w * x[month, rotation, resident] for w, month in zip(weights, MONTHS))
 
 cristi_objective = (
-    3/6 * as_early_as_possible('Rabaza', 'MICU-DH') +
-    3/6 * as_early_as_possible('Rabaza', 'MICU-UH') +
-    2/6 * as_early_as_possible('Rabaza', 'OB-UH') +
-    1/3 * x['Dec', 'School-based Peds', 'Rabaza']
+    3/6 * as_early_as_possible('Cristi', 'MICU-DH') +
+    3/6 * as_early_as_possible('Cristi', 'MICU-UH') +
+    2/6 * as_early_as_possible('Cristi', 'OB-UH') +
+    1/3 * x['Dec', 'School-based Peds', 'Cristi']
 )
 resident_objective.append(cristi_objective)
 
@@ -362,10 +362,10 @@ John's Goal
 2) An elective over winter at some point
 """
 john_objective = (
-    1/3 * as_early_as_possible('Weeks', 'MICU-DH') +
-    1/3 * as_early_as_possible('Weeks', 'MICU-UH') +
-    1/3 * as_early_as_possible('Weeks', 'OB-UH') +
-    1/3 * avg([x[month, 'Elective', 'Weeks'] for month in ('Dec', 'Jan', 'Feb')])
+    1/3 * as_early_as_possible('John', 'MICU-DH') +
+    1/3 * as_early_as_possible('John', 'MICU-UH') +
+    1/3 * as_early_as_possible('John', 'OB-UH') +
+    1/3 * avg([x[month, 'Elective', 'John'] for month in ('Dec', 'Jan', 'Feb')])
 )
 resident_objective.append(john_objective)
 
@@ -379,11 +379,11 @@ Alisa's Goal
 5. Alternating inpatient, outpatient
 """
 alisa_objective = (
-    5/15 * sum(x['May', rotation, 'Malki'] for rotation in OUTPATIENT_ROTATIONS) +
-    4/15 * sum(x['Sep', rotation, 'Malki'] for rotation in OUTPATIENT_ROTATIONS) +
-    3/15 * sum(x['Jul', rotation, 'Malki'] for rotation in OUTPATIENT_ROTATIONS) +
-    2/15 * sum(x['Dec', rotation, 'Malki'] for rotation in OUTPATIENT_ROTATIONS) +
-    1/15 * no_two_inpatient_in_a_row('Malki')
+    5/15 * sum(x['May', rotation, 'Alisa'] for rotation in OUTPATIENT_ROTATIONS) +
+    4/15 * sum(x['Sep', rotation, 'Alisa'] for rotation in OUTPATIENT_ROTATIONS) +
+    3/15 * sum(x['Jul', rotation, 'Alisa'] for rotation in OUTPATIENT_ROTATIONS) +
+    2/15 * sum(x['Dec', rotation, 'Alisa'] for rotation in OUTPATIENT_ROTATIONS) +
+    1/15 * no_two_inpatient_in_a_row('Alisa')
 )
 resident_objective.append(alisa_objective)
 
@@ -398,15 +398,15 @@ constraint: Per Linda, Inpatient peds Dec or earlier
 """
 morgan_objective = (
     3/6 * avg([
-        sum(x[month, rotation, 'Schiller'] for rotation in INPATIENT_ROTATIONS)
+        sum(x[month, rotation, 'Morgan'] for rotation in INPATIENT_ROTATIONS)
         for month in ('Jul', 'Aug', 'Sep', 'Nov', 'Dec')]) +
-    2/6 * sum(x[month, rotation, 'Schiller'] for month in ('Jul', 'Aug', 'Sep') for rotation in ('MICU-DH', 'MICU-UH')) +
-    1/6 * x['Oct', 'Elective', 'Schiller']
+    2/6 * sum(x[month, rotation, 'Morgan'] for month in ('Jul', 'Aug', 'Sep') for rotation in ('MICU-DH', 'MICU-UH')) +
+    1/6 * x['Oct', 'Elective', 'Morgan']
 )
 resident_objective.append(morgan_objective)
 
 model.addConstraint(
-    sum(x[month, rotation, 'Schiller']
+    sum(x[month, rotation, 'Morgan']
         for month in ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun')
         for rotation in ('Inpatient Peds CHCO', 'Inpatient Peds DH')) == 0,
     'Per Linda, morgan must do Inpatient peds Dec or earlier')
